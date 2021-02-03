@@ -1,6 +1,5 @@
 import { NextPage } from "next";
 import Head from "next/head";
-import _JSXStyle from "styled-jsx/style";
 import { Fragment } from "react";
 
 const Home: NextPage<{}> = () => {

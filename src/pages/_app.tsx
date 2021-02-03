@@ -1,5 +1,4 @@
 import { AppProps } from "next/app";
-import _JSXStyle from "styled-jsx/style";
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
