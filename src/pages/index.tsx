@@ -19,6 +19,7 @@ const Home: NextPage<{}> = () => {
           <p className={"description"}>
             Get started by editing{" "}
             <code className={"code"}>pages/index.js</code>
+            <code>{process.env.PROJECT_ID}</code>
           </p>
 
           <div className={"grid"}>
