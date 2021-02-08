@@ -11,4 +11,7 @@ module.exports = {
   images: {
     domains: ["storage.googleapis.com"],
   },
+  experimental: {
+    optimizeFonts: true,
+  },
 };
