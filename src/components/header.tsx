@@ -35,6 +35,7 @@ const Header: FC = () => (
         .wrapper {
           max-width: 250px;
           padding-left: 24px;
+          padding-top: 10px;
         }
       `}
     </style>
