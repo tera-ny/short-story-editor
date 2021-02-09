@@ -1,10 +1,10 @@
 import { FC, useEffect } from "react";
-import { useRecoilState } from "recoil";
+import { useSetRecoilState } from "recoil";
 import authState from "~/stores/auth";
 import firebase from "~/modules/firebase";
 
 const Auth: FC = ({ children }) => {
-  const [uid, setAuth] = useRecoilState(authState);
+  const setAuth = useSetRecoilState(authState);
   useEffect(() => {
     const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
       setAuth(user?.uid ?? null);
@@ -14,7 +14,7 @@ const Auth: FC = ({ children }) => {
     };
     return cleanup;
   });
-  return <>{uid && children}</>;
+  return <>{children}</>;
 };
 
 export default Auth;

@@ -2,7 +2,7 @@ import { NextPage } from "next";
 import Auth from "~/components/auth";
 import Header from "~/components/header";
 import defaultStyle from "~/styles/page/default";
-import LoginTemplate from "~/templates/login";
+import LogoutTemplate from "~/templates/logout";
 
 const Page: NextPage<{}> = () => {
   return (
@@ -10,7 +10,7 @@ const Page: NextPage<{}> = () => {
       <Header />
       <main>
         <Auth>
-          <LoginTemplate />
+          <LogoutTemplate />
         </Auth>
       </main>
       <style jsx>{defaultStyle}</style>
