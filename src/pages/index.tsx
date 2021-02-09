@@ -1,16 +1,23 @@
-import { NextPage } from "next";
+import { NextPage, GetStaticProps } from "next";
 import Header from "~/components/header";
+import defaultStyle from "~/styles/page/default";
+import TopTemplate from "~/templates/top";
+import Auth from "~/components/auth";
+
+export const getStaticProps: GetStaticProps<{}> = async () => {
+  return { props: {} };
+};
 
 const Page: NextPage<{}> = () => {
   return (
     <>
       <Header />
-      <main>hello</main>
-      <style jsx>{`
-        main {
-          min-height: calc(100vh - 52px);
-        }
-      `}</style>
+      <main>
+        <Auth>
+          <TopTemplate />
+        </Auth>
+      </main>
+      <style jsx>{defaultStyle}</style>
     </>
   );
 };
