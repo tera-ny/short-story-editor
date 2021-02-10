@@ -18,6 +18,13 @@ const Page: NextPage<{}> = () => {
         </Auth>
       </main>
       <style jsx>{defaultStyle}</style>
+      <style jsx>
+        {`
+          main {
+            padding: 40px 20px;
+          }
+        `}
+      </style>
     </>
   );
 };
