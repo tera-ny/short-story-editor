@@ -1,5 +1,6 @@
 import { FC, useEffect } from "react";
 import Profile from "~/components/profile";
+import StoryList from "~/components/storylist";
 
 const Top: FC = () => {
   useEffect(() => {});
@@ -8,18 +9,20 @@ const Top: FC = () => {
       <div>
         <div className={"container"}>
           <Profile />
-          <div>hoge</div>
+          <StoryList />
         </div>
       </div>
       <style jsx>
         {`
           .container {
             display: grid;
-            grid-template-columns: 25% 75%;
+            grid-template-columns: 25% auto;
             max-width: 1480px;
             width: 100%;
             margin: 0 auto;
             gap: 20px;
+            box-sizing: border-box;
+            padding: 40px 20px 0;
           }
         `}
       </style>

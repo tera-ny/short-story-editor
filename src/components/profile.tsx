@@ -4,8 +4,7 @@ import userState from "~/stores/user";
 import { useRecoilValue, useRecoilState } from "recoil";
 import firebase, { userConverter } from "~/modules/firebase";
 import NextImage from "next/image";
-import dayjs from "dayjs";
-import "dayjs/locale/ja";
+import { format } from "~/modules/date";
 
 const Profile: FC = () => {
   const uid = useRecoilValue(authState);
@@ -44,9 +43,7 @@ const Profile: FC = () => {
         <h2 className={"name"}>{user.data.name}</h2>
         <p className={"aboutMe"}>{user.data.aboutMe}</p>
         <p className={"startAt"}>
-          {dayjs(user.data.createTime.toDate())
-            .locale("ja")
-            .format("YYYY/MM/DD")}
+          {format(user.data.createTime.toDate(), "YYYY/MM/DD")}
           から利用しています
         </p>
       </div>

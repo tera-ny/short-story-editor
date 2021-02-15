@@ -1,7 +1,7 @@
 import firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/firestore";
-import { User } from "~/modules/entity";
+import { User, Story } from "~/modules/entity";
 
 const app =
   firebase.apps.length === 0
@@ -30,6 +30,25 @@ export const userConverter: firebase.firestore.FirestoreDataConverter<User> = {
   ): User {
     const data = snapshot.data(options)!;
     return data as User;
+  },
+};
+
+export const storyConverter: firebase.firestore.FirestoreDataConverter<Story> = {
+  toFirestore(story: Partial<Story>): firebase.firestore.DocumentData {
+    return {
+      title: story.title,
+      body: story.body,
+      isPublished: story.isPublished,
+      isActive: story.isActive,
+      updateTime: firebase.firestore.FieldValue.serverTimestamp(),
+    };
+  },
+  fromFirestore(
+    snapshot: firebase.firestore.QueryDocumentSnapshot,
+    options: firebase.firestore.SnapshotOptions
+  ): Story {
+    const data = snapshot.data(options)!;
+    return data as Story;
   },
 };
 
