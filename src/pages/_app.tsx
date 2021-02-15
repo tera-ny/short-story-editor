@@ -33,10 +33,6 @@ export default function App({ Component, pageProps }: AppProps) {
           font-weight: 500;
           font-size: 16px;
         }
-
-        * {
-          box-sizing: border-box;
-        }
       `}</style>
     </>
   );
