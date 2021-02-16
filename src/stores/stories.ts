@@ -6,9 +6,9 @@ interface State {
   data: Story;
 }
 
-const state = atom<State>({
-  key: "story",
-  default: undefined,
+const state = atom<State[]>({
+  key: "stories",
+  default: [],
 });
 
 export default state;
