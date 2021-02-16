@@ -2,6 +2,8 @@ import firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/firestore";
 import { User, Story } from "~/modules/entity";
+import omitBy from "lodash.omitby";
+import isUndefined from "lodash.isundefined";
 
 const app =
   firebase.apps.length === 0
@@ -18,11 +20,14 @@ const app =
 
 export const userConverter: firebase.firestore.FirestoreDataConverter<User> = {
   toFirestore(user: Partial<User>): firebase.firestore.DocumentData {
-    return {
-      name: user.name,
-      icon: user.icon,
-      updateTime: firebase.firestore.FieldValue.serverTimestamp,
-    };
+    return omitBy(
+      {
+        name: user.name,
+        icon: user.icon,
+        updateTime: firebase.firestore.FieldValue.serverTimestamp,
+      },
+      isUndefined
+    );
   },
   fromFirestore(
     snapshot: firebase.firestore.QueryDocumentSnapshot,
@@ -35,13 +40,17 @@ export const userConverter: firebase.firestore.FirestoreDataConverter<User> = {
 
 export const storyConverter: firebase.firestore.FirestoreDataConverter<Story> = {
   toFirestore(story: Partial<Story>): firebase.firestore.DocumentData {
-    return {
-      title: story.title,
-      body: story.body,
-      isPublished: story.isPublished,
-      isActive: story.isActive,
-      updateTime: firebase.firestore.FieldValue.serverTimestamp(),
-    };
+    return omitBy(
+      {
+        title: story.title,
+        body: story.body,
+        isPublished: story.isPublished,
+        description: story.description,
+        isActive: story.isActive,
+        updateTime: firebase.firestore.FieldValue.serverTimestamp(),
+      },
+      isUndefined
+    );
   },
   fromFirestore(
     snapshot: firebase.firestore.QueryDocumentSnapshot,

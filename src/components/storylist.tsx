@@ -1,7 +1,7 @@
 import { FC, useEffect } from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
 import StoryCell from "~/components/storycell";
-import storyState from "~/stores/story";
+import storyState from "~/stores/stories";
 import authState from "~/stores/auth";
 import firebase, { storyConverter } from "~/modules/firebase";
 import NextLink from "next/link";
@@ -42,7 +42,7 @@ const StoryList: FC = () => {
           <span>小説</span>
         </div>
         {stories.map((story, index) => (
-          <NextLink key={index} href={`stories/${story.id}`}>
+          <NextLink key={index} href={`stories/${story.id}/edit`}>
             <a>
               <StoryCell key={index} data={story.data} />
             </a>
