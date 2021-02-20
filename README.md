@@ -1,6 +1,6 @@
 # short story editor
 
-https://editor.short-story
+https://editor.short-story.space
 
 ## Getting Started
 
