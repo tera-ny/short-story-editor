@@ -3,7 +3,7 @@ import { useRecoilState, useRecoilValue } from "recoil";
 import StoryCell from "~/components/storycell";
 import storyState from "~/stores/stories";
 import authState from "~/stores/auth";
-import firebase, { storyConverter } from "~/modules/firebase";
+import { path } from "~/modules/firebase";
 import NextLink from "next/link";
 
 const StoryList: FC = () => {
@@ -13,14 +13,10 @@ const StoryList: FC = () => {
     if (uid) {
       let mounted = true;
       (async () => {
-        const stories = await firebase
-          .firestore()
-          .collection("users")
-          .doc(uid)
-          .collection("stories")
+        const stories = await path.users.stories
+          .ref(uid)
           .where("isActive", "==", true)
-          .orderBy("createTime", "desc")
-          .withConverter(storyConverter)
+          .orderBy("updateTime", "desc")
           .get();
         if (mounted) {
           setStories(
@@ -55,7 +51,8 @@ const StoryList: FC = () => {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
             grid-template-rows: 30px repeat(auto-fill, 120px);
-            gap: 20px;
+            row-gap: 20px;
+            column-gap: 20px;
             box-sizing: border-box;
           }
           .header {

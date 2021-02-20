@@ -2,7 +2,7 @@ import { NextPage, GetStaticProps, GetStaticPaths } from "next";
 import Header from "~/components/header";
 import defaultStyle from "~/styles/page/default";
 import Auth from "~/components/auth";
-import Container from "~/container/edit";
+import Template from "~/templates/edit";
 
 export const getStaticPaths: GetStaticPaths = async () => {
   return { paths: [], fallback: true };
@@ -18,7 +18,7 @@ const Page: NextPage<{}> = () => {
       <Header />
       <main>
         <Auth shouldLoggedIn>
-          <Container />
+          <Template />
         </Auth>
       </main>
       <style jsx>{defaultStyle}</style>
