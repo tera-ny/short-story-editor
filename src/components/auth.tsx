@@ -13,10 +13,9 @@ const Auth: FC<Props> = ({ children, shouldLoggedIn }) => {
     const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
       setAuth(user?.uid ?? null);
     });
-    const cleanup = () => {
+    return () => {
       unsubscribe();
     };
-    return cleanup;
   });
   if (shouldLoggedIn) {
     return uid ? <>{children}</> : <></>;

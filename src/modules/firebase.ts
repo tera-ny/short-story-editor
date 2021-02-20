@@ -61,4 +61,31 @@ export const storyConverter: firebase.firestore.FirestoreDataConverter<Story> = 
   },
 };
 
+const usersRef = () =>
+  app.firestore().collection("users").withConverter(userConverter);
+
+const userRef = (uid: string) =>
+  usersRef().doc(uid).withConverter(userConverter);
+
+const storiesRef = (uid: string) =>
+  userRef(uid).collection("stories").withConverter(storyConverter);
+
+const storyRef = (uid: string, id?: string) =>
+  storiesRef(uid).doc(id).withConverter(storyConverter);
+
+export const path = {
+  users: {
+    ref: usersRef,
+    id: {
+      ref: userRef,
+    },
+    stories: {
+      ref: storiesRef,
+      id: {
+        ref: storyRef,
+      },
+    },
+  },
+};
+
 export default app;

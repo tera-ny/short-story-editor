@@ -13,7 +13,7 @@ const StoryCell: FC<Props> = ({ data }) => {
         <p className={"title"}>{data.title}</p>
         <p className={"description"}>{data.description}</p>
         <p className={"createTime"}>
-          {format(data.createTime.toDate(), "YYYY/MM/DD")}
+          {format(data.updateTime.toDate(), "YYYY/MM/DD")}
         </p>
       </div>
       <style jsx>
