@@ -1,4 +1,4 @@
-# short story editor
+<img src="https://editor.short-story.space/logo.png" />
 
 https://editor.short-story.space
 
