@@ -70,7 +70,7 @@ const userRef = (uid: string) =>
 const storiesRef = (uid: string) =>
   userRef(uid).collection("stories").withConverter(storyConverter);
 
-const storyRef = (uid: string, id: string) =>
+const storyRef = (uid: string, id?: string) =>
   storiesRef(uid).doc(id).withConverter(storyConverter);
 
 export const path = {

@@ -1,6 +1,6 @@
 import { FC, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/router";
-import { currentStoryState, currentStoryIDState } from "~/stores/story";
+import { currentStoryState } from "~/stores/story";
 import authState from "~/stores/auth";
 import { useRecoilState, useRecoilValue } from "recoil";
 import Editor from "~/components/editor";
@@ -9,51 +9,46 @@ import { path } from "~/modules/firebase";
 const Template: FC = () => {
   const router = useRouter();
   const uid = useRecoilValue(authState);
-  const [id, setID] = useRecoilState(currentStoryIDState);
+  const id = useMemo(() => {
+    if (typeof router.query.storyid === "string") {
+      return router.query.storyid;
+    } else {
+      return undefined;
+    }
+  }, [router.query.storyid]);
   const [story, setStory] = useRecoilState(currentStoryState);
-  const [error, setError] = useState<Error>();
+  const [error, setError] = useState<string>();
 
   useEffect(() => {
     setStory(undefined);
-  }, []);
-
-  useEffect(() => {
-    if (
-      router.query.storyid &&
-      typeof router.query.storyid === "string" &&
-      id !== router.query.storyid
-    ) {
-      setID(router.query.storyid);
-    }
-  }, [id, router.query.storyid]);
-
-  useEffect(() => {
-    if (!id || typeof id !== "string") {
+    if (!id) {
       return;
     }
-    let mounted = true;
-    (async () => {
-      try {
-        const ref = path.users.stories.id.ref(uid, id);
-        const snapshot = await ref.get();
-        if (mounted) {
+    const unsubscribe = path.users.stories.id.ref(uid, id).onSnapshot(
+      (snapshot) => {
+        if (snapshot.exists) {
           setStory(snapshot.data());
         }
-      } catch (e) {
-        if (mounted) {
-          setError(e);
+      },
+      (err) => {
+        switch (err.code) {
+          case "permission-denied":
+            setError("作品が存在しません");
+            break;
+          default:
+            setError("予期せぬエラーが発生しました");
+            break;
         }
       }
-    })();
+    );
     return () => {
-      mounted = false;
+      unsubscribe();
     };
-  }, [id, uid]);
-
+  }, [uid, id]);
   if (story) {
-    return <Editor story={story} />;
+    return <Editor id={id} story={story} />;
   } else if (error) {
-    return <p>作品を取得することができませんでした</p>;
+    return <p>{error}</p>;
   } else {
     return <></>;
   }

@@ -1,36 +1,37 @@
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import authState from "~/stores/auth";
 import { useRecoilCallback } from "recoil";
 import { path } from "~/modules/firebase";
 import { format } from "~/modules/date";
 import Indicator from "~/components/indicator";
 import { Story } from "~/modules/entity";
-import { currentStoryIDState, currentStoryState } from "~/stores/story";
 
 interface Props {
+  id?: string;
   story: Story;
 }
 
-const Editor: FC<Props> = ({ story }) => {
+const Editor: FC<Props> = ({ id, story }) => {
   const [title, setTitle] = useState(story?.title ?? "");
   const [description, setDescription] = useState(story?.description ?? "");
   const [body, setBody] = useState(story?.body ?? "");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  useEffect(() => {
+    setTitle(story?.title ?? "");
+    setDescription(story?.description ?? "");
+    setBody(story?.body ?? "");
+  }, [story]);
+
   const onSubmit = useRecoilCallback(
-    ({ snapshot, set }) => async () => {
+    ({ snapshot }) => async () => {
       if (isSubmitting) {
         return;
       }
       setIsSubmitting(true);
-      const [uid, id] = await Promise.all([
-        snapshot.getPromise(authState),
-        snapshot.getPromise(currentStoryIDState),
-      ]);
+      const uid = await snapshot.getPromise(authState);
       const ref = path.users.stories.id.ref(uid, id);
       await ref.set({ title, description, body }, { merge: true });
-      const document = await ref.get();
-      set(currentStoryState, document.data());
       setIsSubmitting(false);
     },
     [title, description, body, isSubmitting]
@@ -56,7 +57,7 @@ const Editor: FC<Props> = ({ story }) => {
               setDescription(e.target.value);
             }}
           />
-          {story && (
+          {story && story.updateTime && (
             <p className={"updateTime"}>
               {"更新 • " +
                 format(story.updateTime.toDate(), "YYYY/MM/DD HH:mm:ss")}
