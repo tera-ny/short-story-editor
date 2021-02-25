@@ -13,7 +13,7 @@ yarn deploy
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
 ### Using librarys and frameworks
-- [typescript](https://www.typescriptlang.org/)
+- [Typescript](https://www.typescriptlang.org/)
 - [Next.js](https://nextjs.org/)
 - [styled-jsx](https://github.com/vercel/styled-jsx)
 - [Lodash](https://lodash.com/)
