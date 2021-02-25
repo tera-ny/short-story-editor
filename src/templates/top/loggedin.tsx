@@ -9,7 +9,7 @@ const Top: FC = () => {
       <div>
         <div className={"container"}>
           <Profile />
-          <StoryList />
+          <StoryList type="All" />
         </div>
       </div>
       <style jsx>

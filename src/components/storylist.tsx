@@ -1,13 +1,17 @@
 import { FC, useEffect } from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
 import StoryCell from "~/components/storycell";
-import storyState from "~/stores/stories";
 import authState from "~/stores/auth";
 import { path } from "~/modules/firebase";
 import NextLink from "next/link";
+import { SectionType, storiesSelector } from "~/stores/story";
 
-const StoryList: FC = () => {
-  const [stories, setStories] = useRecoilState(storyState);
+interface Props {
+  type: SectionType;
+}
+
+const StoryList: FC<Props> = ({ type }) => {
+  const [stories, setStories] = useRecoilState(storiesSelector({ type }));
   const uid = useRecoilValue(authState);
   useEffect(() => {
     if (uid) {
@@ -21,7 +25,7 @@ const StoryList: FC = () => {
         if (mounted) {
           setStories(
             stories.docs.map((storySnapshot) => {
-              return { id: storySnapshot.id, data: storySnapshot.data() };
+              return { ...storySnapshot.data(), id: storySnapshot.id };
             })
           );
         }
@@ -40,7 +44,7 @@ const StoryList: FC = () => {
         {stories.map((story, index) => (
           <NextLink key={index} href={`stories/${story.id}/edit`}>
             <a>
-              <StoryCell key={index} data={story.data} />
+              <StoryCell key={index} data={story} />
             </a>
           </NextLink>
         ))}
