@@ -45,7 +45,7 @@ const Template: FC = () => {
     };
   }, [uid, id]);
   if (story) {
-    return <Editor id={id} story={story} />;
+    return <Editor type="edit" {...story} id={id} />;
   } else if (error) {
     return <p>{error}</p>;
   } else {

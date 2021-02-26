@@ -1,44 +1,84 @@
 import { FC, useCallback, useEffect, useMemo, useState } from "react";
 import authState from "~/stores/auth";
 import { useRecoilCallback } from "recoil";
-import { path } from "~/modules/firebase";
+import { path, createStoryConverter } from "~/modules/firebase";
 import { format } from "~/modules/date";
 import Indicator from "~/components/indicator";
 import { Story } from "~/modules/entity";
 import NextImage from "next/image";
+import firebase from "firebase/app";
+import "firebase/firestore";
+import { useRouter } from "next/router";
 
-interface Props {
-  id?: string;
-  story: Story;
-}
+type Props =
+  | ({
+      type: "edit";
+      id?: string;
+    } & Story)
+  | {
+      type: "new";
+      destination: string;
+    };
 
-const Editor: FC<Props> = ({ id, story }) => {
-  const [title, setTitle] = useState(story?.title ?? "");
-  const [description, setDescription] = useState(story?.description ?? "");
-  const [body, setBody] = useState(story?.body ?? "");
+const Editor: FC<Props> = (props) => {
+  const [title, setTitle] = useState(props.type === "edit" ? props.title : "");
+  const [description, setDescription] = useState(
+    props.type === "edit" ? props.description : ""
+  );
+  const [body, setBody] = useState(props.type === "edit" ? props.body : "");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDisplayPopup, setIsDisplayPopup] = useState(false);
+  const router = useRouter();
+
+  const canSubmit = useMemo(() => title.length > 0, [title]);
 
   const hasDiff = useMemo(
     () =>
-      story.title !== title ||
-      story.description !== description ||
-      story.body !== body,
-    [story.title, story.description, story.body, title, description, body]
+      props.type === "new" ||
+      (props.type === "edit" &&
+        (props.title !== title ||
+          props.description !== description ||
+          props.body !== body)),
+    [props, title, description, body]
   );
+
+  useEffect(() => {
+    if (!hasDiff) {
+      return;
+    }
+    const handleUnload = (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+      e.returnValue = "";
+    };
+    window.addEventListener("beforeunload", handleUnload);
+    return () => {
+      window.removeEventListener("beforeunload", handleUnload);
+    };
+  }, [hasDiff]);
 
   const onSubmit = useRecoilCallback(
     ({ snapshot }) => async () => {
-      if (isSubmitting) {
+      if (isSubmitting || !canSubmit) {
         return;
       }
       setIsSubmitting(true);
       const uid = await snapshot.getPromise(authState);
-      const ref = path.users.stories.id.ref(uid, id);
+      let ref: firebase.firestore.DocumentReference<Story>;
+      if (props.type === "edit") {
+        ref = path.users.stories.id.ref(uid, props.id);
+      } else {
+        ref = path.users.stories
+          .ref(uid)
+          .withConverter(createStoryConverter)
+          .doc();
+      }
       await ref.set({ title, description, body }, { merge: true });
+      if (props.type === "new") {
+        router.push(props.destination);
+      }
       setIsSubmitting(false);
     },
-    [title, description, body, isSubmitting]
+    [title, description, body, isSubmitting, props]
   );
 
   const handleSave = useCallback(
@@ -49,7 +89,7 @@ const Editor: FC<Props> = ({ id, story }) => {
         return false;
       }
     },
-    [title, description, body, isSubmitting]
+    [title, description, body, isSubmitting, props]
   );
 
   useEffect(() => {
@@ -59,7 +99,7 @@ const Editor: FC<Props> = ({ id, story }) => {
         window.removeEventListener("keydown", handleSave);
       };
     }
-  }, [title, description, body, isSubmitting]);
+  }, [title, description, body, isSubmitting, , props]);
 
   return (
     <>
@@ -90,10 +130,10 @@ const Editor: FC<Props> = ({ id, story }) => {
               setDescription(e.target.value);
             }}
           />
-          {story && story.updateTime && (
+          {props.type === "edit" && props.updateTime && (
             <p className={"updateTime"}>
               {"更新 • " +
-                format(story.updateTime.toDate(), "YYYY/MM/DD HH:mm:ss")}
+                format(props.updateTime.toDate(), "YYYY/MM/DD HH:mm:ss")}
             </p>
           )}
         </div>
@@ -138,12 +178,16 @@ const Editor: FC<Props> = ({ id, story }) => {
             </button>
           </div>
           <button
-            disabled={isSubmitting || !hasDiff}
+            disabled={isSubmitting || !hasDiff || !canSubmit}
             onClick={() => {
               onSubmit();
             }}
           >
-            {hasDiff ? "保存" : "保存完了"}
+            {hasDiff
+              ? props.type === "edit"
+                ? "保存"
+                : "新規作成"
+              : "保存完了"}
           </button>
         </div>
       </div>
@@ -176,11 +220,11 @@ const Editor: FC<Props> = ({ id, story }) => {
             display: grid;
             gap: 24px;
             grid-template-rows: 1fr auto;
-            grid-template-columns: 1fr 32px auto;
+            grid-template-columns: 1fr 32px 28px auto;
           }
 
           .bodyText {
-            grid-column: 1/4;
+            grid-column: 1/5;
             display: grid;
             grid-template-rows: auto 1fr;
           }
@@ -200,7 +244,7 @@ const Editor: FC<Props> = ({ id, story }) => {
           }
 
           .helpContainer {
-            grid-column: 2/3;
+            grid-column: 3/4;
             align-self: center;
             justify-self: center;
             position: relative;
@@ -312,7 +356,7 @@ const Editor: FC<Props> = ({ id, story }) => {
             padding: 8px 48px;
             font-weight: 500;
             font-size: 16px;
-            grid-column: 3/4;
+            grid-column: 4/5;
             border-radius: 8px;
             user-select: none;
             cursor: pointer;
