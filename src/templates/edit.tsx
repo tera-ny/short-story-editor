@@ -20,7 +20,6 @@ const Template: FC = () => {
   const [error, setError] = useState<string>();
 
   useEffect(() => {
-    setStory(undefined);
     if (!id) {
       return;
     }
