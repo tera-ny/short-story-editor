@@ -38,6 +38,27 @@ export const userConverter: firebase.firestore.FirestoreDataConverter<User> = {
   },
 };
 
+export const createStoryConverter: firebase.firestore.FirestoreDataConverter<Story> = {
+  toFirestore(
+    story: Pick<Story, "title" | "description" | "body">
+  ): firebase.firestore.DocumentData {
+    return {
+      title: story.title,
+      body: story.body,
+      isPublished: false,
+      isActive: true,
+      createTime: firebase.firestore.FieldValue.serverTimestamp(),
+      updateTime: firebase.firestore.FieldValue.serverTimestamp(),
+    };
+  },
+  fromFirestore(
+    snapshot: firebase.firestore.QueryDocumentSnapshot,
+    options: firebase.firestore.SnapshotOptions
+  ): Story {
+    throw new Error("set only support");
+  },
+};
+
 export const storyConverter: firebase.firestore.FirestoreDataConverter<Story> = {
   toFirestore(story: Partial<Story>): firebase.firestore.DocumentData {
     return omitBy(

@@ -1,18 +1,14 @@
-import { NextPage, GetStaticProps, GetStaticPaths } from "next";
+import { NextPage, GetStaticProps } from "next";
 import Header from "~/components/header";
 import defaultStyle from "~/styles/page/default";
 import Auth from "~/components/auth";
-import Template from "~/templates/story/edit";
-
-export const getStaticPaths: GetStaticPaths = async () => {
-  return { paths: [], fallback: true };
-};
+import Template from "~/templates/story/new";
 
 export const getStaticProps: GetStaticProps<{}> = async () => {
   return { props: {} };
 };
 
-const Page: NextPage<{}> = () => {
+const Page: NextPage = () => {
   return (
     <>
       <Header />

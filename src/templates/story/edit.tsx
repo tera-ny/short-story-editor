@@ -1,6 +1,6 @@
 import { FC, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/router";
-import { currentStoryState } from "~/stores/story";
+import { storyState } from "~/stores/story";
 import authState from "~/stores/auth";
 import { useRecoilState, useRecoilValue } from "recoil";
 import Editor from "~/components/editor";
@@ -16,11 +16,10 @@ const Template: FC = () => {
       return undefined;
     }
   }, [router.query.storyid]);
-  const [story, setStory] = useRecoilState(currentStoryState);
+  const [story, setStory] = useRecoilState(storyState({ id }));
   const [error, setError] = useState<string>();
 
   useEffect(() => {
-    setStory(undefined);
     if (!id) {
       return;
     }
@@ -46,7 +45,7 @@ const Template: FC = () => {
     };
   }, [uid, id]);
   if (story) {
-    return <Editor id={id} story={story} />;
+    return <Editor type="edit" {...story} id={id} />;
   } else if (error) {
     return <p>{error}</p>;
   } else {
