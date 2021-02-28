@@ -2,15 +2,9 @@ import { FC, useEffect } from "react";
 import { useRecoilCallback, useRecoilState } from "recoil";
 import Section from "~/components/ploteditor/section";
 import {
-  editingPlotContents,
   editingPlotState,
-  editingPlotSections,
-  editingPlotNodes,
-  initializeContentState,
-  initializePlotState,
-  initializeSectionState,
-  initializeNodeState,
   editingPlotSelector,
+  resetPlotState,
 } from "~/stores/plot";
 
 interface Props {
@@ -18,31 +12,7 @@ interface Props {
 }
 
 const PlotEditor: FC<Props> = ({ template }) => {
-  const reset = useRecoilCallback(({ snapshot, set }) => async () => {
-    const plot = await snapshot.getPromise(editingPlotState);
-    const sections = await Promise.all(
-      plot.sectionTitles.map(async (_, index) =>
-        snapshot.getPromise(editingPlotSections({ index }))
-      )
-    );
-    const contents = sections.map((section) => section.contents).flat();
-    const nodes = (
-      await Promise.all(
-        contents.map(
-          async (id) =>
-            (await snapshot.getPromise(editingPlotContents({ id }))).nodeIDs
-        )
-      )
-    ).flat();
-    sections.forEach((_, index) => {
-      set(editingPlotSections({ index }), initializeSectionState());
-    });
-    contents.forEach((id) => {
-      set(editingPlotContents({ id }), initializeContentState);
-    });
-    nodes.forEach((id) => set(editingPlotNodes({ id }), initializeNodeState));
-    set(editingPlotState, initializePlotState);
-  });
+  const reset = resetPlotState();
   const send = useRecoilCallback(({ snapshot }) => async () => {
     const plot = await snapshot.getPromise(editingPlotSelector);
     reset();

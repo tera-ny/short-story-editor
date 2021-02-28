@@ -106,7 +106,7 @@ const Content: FC<Props> = ({ id, onRemove, isLast }) => {
                 resize: "none",
                 outline: "none",
                 padding: "0 12px",
-                fontSize: "16px",
+                fontSize: "14px",
                 lineHeight: "150%",
               }}
               minRows={5}
@@ -186,8 +186,10 @@ const Content: FC<Props> = ({ id, onRemove, isLast }) => {
             box-sizing: border-box;
           }
           .option {
-            height: 12px;
-            width: 36px;
+            height: 20px;
+            padding: 4px;
+            margin-right: 4px;
+            width: 34px;
             border: none;
             background-color: transparent;
             outline: none;

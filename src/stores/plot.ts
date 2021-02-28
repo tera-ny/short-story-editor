@@ -1,4 +1,4 @@
-import { atom, atomFamily, selector } from "recoil";
+import { atom, atomFamily, selector, useRecoilCallback } from "recoil";
 import { v4 } from "uuid";
 import {
   Plot,
@@ -6,6 +6,34 @@ import {
   PlotContentWithNodes,
   PlotSection,
 } from "~/modules/entity";
+
+export const resetPlotState = () => {
+  return useRecoilCallback(({ snapshot, set }) => async () => {
+    const plot = await snapshot.getPromise(editingPlotState);
+    const sections = await Promise.all(
+      plot.sectionTitles.map(async (_, index) =>
+        snapshot.getPromise(editingPlotSections({ index }))
+      )
+    );
+    const contents = sections.map((section) => section.contents).flat();
+    const nodes = (
+      await Promise.all(
+        contents.map(
+          async (id) =>
+            (await snapshot.getPromise(editingPlotContents({ id }))).nodeIDs
+        )
+      )
+    ).flat();
+    sections.forEach((_, index) => {
+      set(editingPlotSections({ index }), initializeSectionState());
+    });
+    contents.forEach((id) => {
+      set(editingPlotContents({ id }), initializeContentState);
+    });
+    nodes.forEach((id) => set(editingPlotNodes({ id }), initializeNodeState));
+    set(editingPlotState, initializePlotState);
+  });
+};
 
 export const editingPlotSelector = selector<
   Omit<Plot, "createTime" | "updateTime">
