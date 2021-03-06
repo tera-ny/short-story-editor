@@ -39,9 +39,12 @@ const StoryList: FC<Props> = ({ type }) => {
   return (
     <>
       <div className={"container"}>
-        <div>
-          <Link href="/stories/new">
-            <a>新規投稿</a>
+        <div className={"head"}>
+          <span>小説</span>
+          <Link href="/stories/new" passHref>
+            <a>
+              <span>執筆</span>
+            </a>
           </Link>
         </div>
         <div className={"contents"}>
@@ -75,6 +78,14 @@ const StoryList: FC<Props> = ({ type }) => {
             user-select: none;
             cursor: default;
           }
+          span {
+            color: #868686;
+            font-size: 20px;
+          }
+          a > span:hover {
+            color: #3c3c3c;
+            cursor: pointer;
+          }
           a {
             text-decoration: none;
             color: #212121;
@@ -85,6 +96,9 @@ const StoryList: FC<Props> = ({ type }) => {
           }
           .container {
             box-sizing: border-box;
+          }
+          .head {
+            padding-bottom: 24px;
           }
           .contentsHeader {
             display: grid;

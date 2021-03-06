@@ -58,7 +58,7 @@ const Editor: FC<Props> = (props) => {
 
   const onSubmit = useRecoilCallback(
     ({ snapshot }) => async () => {
-      if (isSubmitting || !canSubmit) {
+      if (isSubmitting || !canSubmit || (props.type === "edit" && !hasDiff)) {
         return;
       }
       setIsSubmitting(true);
@@ -74,7 +74,7 @@ const Editor: FC<Props> = (props) => {
       }
       await ref.set({ title, description, body }, { merge: true });
       if (props.type === "new") {
-        router.push(props.destination);
+        router.replace(`/stories/${ref.id}/edit`);
       }
       setIsSubmitting(false);
     },
