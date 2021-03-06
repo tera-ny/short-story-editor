@@ -34,23 +34,25 @@ const Profile: FC = () => {
   }
   return (
     <>
-      <div>
-        {user.data.icon && (
-          <div className={"image"}>
-            <NextImage src={user.data.icon} width={500} height={500} />
-          </div>
-        )}
-        <h2 className={"name"}>{user.data.name}</h2>
-        <p className={"aboutMe"}>{user.data.aboutMe}</p>
-        <p className={"startAt"}>
-          {format(user.data.createTime.toDate(), "YYYY/MM/DD")}
-          から利用しています
-        </p>
-      </div>
+      {user.data.icon && (
+        <div className={"image"}>
+          <NextImage src={user.data.icon} width={500} height={500} />
+        </div>
+      )}
+      <h2 className={"name"}>{user.data.name}</h2>
+      <p className={"aboutMe"}>{user.data.aboutMe}</p>
+      <p className={"startAt"}>
+        {format(user.data.createTime.toDate(), "YYYY/MM/DD")}
+        から利用しています
+      </p>
       <style jsx>
         {`
+          h2,
+          p {
+            margin: 0;
+          }
           .image {
-            width: 60%;
+            width: 120px;
             height: auto;
             display: flex;
             border-radius: 50%;
@@ -59,13 +61,19 @@ const Profile: FC = () => {
           .name {
             font-weight: 500;
             color: #212121;
+            padding-top: 12px;
+            font-size: 20px;
           }
           .aboutMe {
+            padding-top: 12px;
             font-weight: 300;
             color: #313131;
+            font-size: 16px;
           }
           .startAt {
+            padding-top: 16px;
             font-weight: 100;
+            font-size: 12px;
           }
         `}
       </style>

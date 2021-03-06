@@ -8,21 +8,32 @@ const Top: FC = () => {
     <>
       <div>
         <div className={"container"}>
-          <Profile />
+          <div className={"profileContainer"}>
+            <Profile />
+          </div>
           <StoryList type="All" />
         </div>
       </div>
       <style jsx>
         {`
           .container {
-            display: grid;
-            grid-template-columns: 25% auto;
-            max-width: 1480px;
-            width: 100%;
-            margin: 0 auto;
-            gap: 20px;
-            box-sizing: border-box;
             padding: 40px 20px 0;
+            box-sizing: border-box;
+            width: 100%;
+          }
+          @media screen and (min-width: 0) and (max-width: 719px) {
+            .profileContainer {
+              padding-bottom: 40px;
+            }
+          }
+          @media screen and (min-width: 720px) {
+            .container {
+              display: grid;
+              grid-template-columns: 25% auto;
+              max-width: 1480px;
+              margin: 0 auto;
+              gap: 20px;
+            }
           }
         `}
       </style>
