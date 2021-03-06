@@ -1,6 +1,8 @@
 import { AppProps } from "next/app";
 import NextHead from "next/head";
 import { RecoilRoot } from "recoil";
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
@@ -13,7 +15,9 @@ export default function App({ Component, pageProps }: AppProps) {
         />
       </NextHead>
       <RecoilRoot>
-        <Component {...pageProps} />
+        <DndProvider backend={HTML5Backend}>
+          <Component {...pageProps} />
+        </DndProvider>
       </RecoilRoot>
       <style jsx global>{`
         html,
