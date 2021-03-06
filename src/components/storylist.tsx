@@ -5,6 +5,7 @@ import authState from "~/stores/auth";
 import { path } from "~/modules/firebase";
 import NextLink from "next/link";
 import { SectionType, storiesSelector } from "~/stores/story";
+import Link from "next/link";
 
 interface Props {
   type: SectionType;
@@ -38,37 +39,37 @@ const StoryList: FC<Props> = ({ type }) => {
   return (
     <>
       <div className={"container"}>
-        <div className={"header"}>
+        <div className={"head"}>
           <span>小説</span>
-        </div>
-        {stories.map((story, index) => (
-          <NextLink key={index} href={`stories/${story.id}/edit`}>
+          <Link href="/stories/new" passHref>
             <a>
-              <StoryCell key={index} data={story} />
+              <span>執筆</span>
             </a>
-          </NextLink>
-        ))}
+          </Link>
+        </div>
+        <div className={"contents"}>
+          <div className={"contentsHeader"}>
+            <p>タイトル</p>
+            <p>公開状態</p>
+            <p>最終更新日</p>
+          </div>
+          {stories.map((story, index) => (
+            <NextLink key={index} href={`stories/${story.id}/edit`}>
+              <a>
+                <StoryCell key={index} data={story} />
+              </a>
+            </NextLink>
+          ))}
+        </div>
       </div>
       <style jsx>
         {`
-          .container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            grid-template-rows: 30px repeat(auto-fill, 120px);
-            row-gap: 20px;
-            column-gap: 20px;
-            box-sizing: border-box;
-          }
-          .header {
-            grid-column: 1 / -1;
-            display: grid;
-            justify-content: left;
-          }
-          hr {
-            border: none;
-            border-left: 0.1px solid #333333;
-            height: 22px;
+          p {
             margin: 0;
+            user-select: none;
+            font-size: 14px;
+            font-weight: 300;
+            color: #686868;
           }
           span {
             font-weight: 100;
@@ -77,6 +78,14 @@ const StoryList: FC<Props> = ({ type }) => {
             user-select: none;
             cursor: default;
           }
+          span {
+            color: #868686;
+            font-size: 20px;
+          }
+          a > span:hover {
+            color: #3c3c3c;
+            cursor: pointer;
+          }
           a {
             text-decoration: none;
             color: #212121;
@@ -84,6 +93,21 @@ const StoryList: FC<Props> = ({ type }) => {
           a:active {
             color: #818181;
             border-color: #818181;
+          }
+          .container {
+            box-sizing: border-box;
+          }
+          .head {
+            padding-bottom: 24px;
+          }
+          .contentsHeader {
+            display: grid;
+            grid-template-columns: 1fr 120px 70px;
+            align-items: center;
+            background-color: #fafafa;
+            border: 1px solid #d3d3d3;
+            border-radius: 4px;
+            padding: 8px 12px;
           }
         `}
       </style>
