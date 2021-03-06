@@ -10,46 +10,58 @@ const StoryCell: FC<Props> = ({ data }) => {
   return (
     <>
       <div>
-        <p className={"title"}>{data.title}</p>
-        <p className={"description"}>{data.description}</p>
-        <p className={"createTime"}>
-          {format(data.updateTime.toDate(), "YYYY/MM/DD")}
-        </p>
+        <li>
+          <p className={"primary"}>{data.title}</p>
+          <p className={"secondary published"}>
+            {data.isPublished ? "公開中" : "非公開"}
+          </p>
+          <p className={"secondary"}>
+            {format(data.updateTime.toDate(), "YYYY/MM/DD")}
+          </p>
+        </li>
+        <hr />
       </div>
       <style jsx>
         {`
-          div {
-            cursor: pointer;
-            border-radius: 8px;
-            border: 0.5px solid #353535;
-            padding: 12px 16px;
-            height: 120px;
-            grid-auto-columns: 200px;
-            box-sizing: border-box;
-            position: relative;
+          p,
+          hr {
+            margin: 0;
           }
-          div:hover {
-            box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+          li {
+            display: grid;
+            grid-template-columns: 1fr 120px 70px;
+            align-items: center;
+            padding: 0 12px;
           }
           p {
             margin: 0;
             user-select: none;
           }
-          .title {
+          hr {
+            border: none;
+            border-bottom: 1px solid #cccccc;
+            margin-top: 4px;
+          }
+          div {
+            padding-top: 12px;
+          }
+          div:hover {
+            background-color: #f8f8f8;
+          }
+          .head {
+            display: flex;
+            justify-content: space-between;
+          }
+          .primary {
             font-size: 16px;
             font-weight: 500;
           }
-          .createTime {
+          .secondary {
             font-size: 12px;
             font-weight: 100;
-            position: absolute;
-            bottom: 12px;
-            right: 16px;
           }
-          .description {
-            padding-top: 8px;
-            font-size: 12px;
-            font-weight: 300;
+          .published {
+            color: ${data.isPublished ? "green" : "gray"};
           }
         `}
       </style>
