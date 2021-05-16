@@ -15,12 +15,12 @@ export const getStaticProps: GetStaticProps<{}> = async () => {
 const Page: NextPage<{}> = () => {
   return (
     <>
-      <Header />
-      <main>
-        <Auth shouldLoggedIn>
+      <Auth shouldLoggedIn>
+        <Header />
+        <main>
           <Template />
-        </Auth>
-      </main>
+        </main>
+      </Auth>
       <style jsx>{defaultStyle}</style>
     </>
   );
