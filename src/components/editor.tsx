@@ -9,6 +9,7 @@ import NextImage from "next/image";
 import firebase from "firebase/app";
 import "firebase/firestore";
 import { useRouter } from "next/router";
+import Link from "next/link";
 
 type Props =
   | ({
@@ -62,13 +63,13 @@ const Editor: FC<Props> = (props) => {
         return;
       }
       setIsSubmitting(true);
-      const uid = await snapshot.getPromise(authState);
+      const auth = await snapshot.getPromise(authState);
       let ref: firebase.firestore.DocumentReference<Story>;
       if (props.type === "edit") {
-        ref = path.users.stories.id.ref(uid, props.id);
+        ref = path.users.stories.id.ref(auth.uid, props.id);
       } else {
         ref = path.users.stories
-          .ref(uid)
+          .ref(auth.uid)
           .withConverter(createStoryConverter)
           .doc();
       }
@@ -113,19 +114,30 @@ const Editor: FC<Props> = (props) => {
           }
         }}
       >
-        <div className={"meta"}>
-          <h2>タイトル</h2>
+        <div className={"linkContainer"}>
+          <Link
+            href={`/stories/${
+              props.type === "edit" ? props.id : "new"
+            }/preview`}
+          >
+            <a className={"previewLink"}>プレビュー👀</a>
+          </Link>
+        </div>
+        <div>
           <input
             type="text"
+            placeholder={"タイトル"}
+            className="title"
             value={title}
             onChange={(e) => {
               setTitle(e.target.value);
             }}
           />
-          <h2>説明文</h2>
           <textarea
+            placeholder={"メモ"}
             rows={10}
             value={description}
+            className="memo"
             onChange={(e) => {
               setDescription(e.target.value);
             }}
@@ -138,15 +150,14 @@ const Editor: FC<Props> = (props) => {
           )}
         </div>
         <div className={"content"}>
-          <div className={"bodyText"}>
-            <h2>本文</h2>
-            <textarea
-              value={body}
-              onChange={(e) => {
-                setBody(e.target.value);
-              }}
-            />
-          </div>
+          <textarea
+            className={"bodyText"}
+            value={body}
+            placeholder={"本文"}
+            onChange={(e) => {
+              setBody(e.target.value);
+            }}
+          />
           {isSubmitting && (
             <div className={"indicator"}>
               <Indicator visible={true} height={28} width={28} />
@@ -156,8 +167,7 @@ const Editor: FC<Props> = (props) => {
             {isDisplayPopup && (
               <div className={"helpPopup"}>
                 <p>
-                  Ctrl + s もしくは Command + s
-                  で作品の保存をすることができます。
+                  Ctrl + S もしくは ⌘ + S で作品の保存をすることができます。
                 </p>
               </div>
             )}
@@ -201,19 +211,21 @@ const Editor: FC<Props> = (props) => {
             margin: 0 auto;
             gap: 32px;
             box-sizing: border-box;
-            padding: 40px 20px 0;
-            height: calc(95vh - 52px);
-          }
-          .indicator {
-            align-self: center;
-            grid-column: 2/3;
-            display: flex;
-            align-items: center;
+            padding: 40px 20px 80px;
+            height: calc(100vh - 80px);
+            position: relative;
           }
 
-          .meta > textarea {
-            resize: vertical;
-            max-height: calc(40vh - 52px);
+          .linkContainer {
+            position: absolute;
+            right: 0;
+            padding-right: 20px;
+          }
+
+          .previewLink {
+            color: #272423;
+            text-decoration: none;
+            background-color: #fbfcfe;
           }
 
           .content {
@@ -223,14 +235,25 @@ const Editor: FC<Props> = (props) => {
             grid-template-columns: 1fr 32px 28px auto;
           }
 
-          .bodyText {
-            grid-column: 1/5;
-            display: grid;
-            grid-template-rows: auto 1fr;
+          .title {
+            margin-bottom: 20px;
+            font-weight: 500;
+            font-size: 18px;
           }
 
-          .bodyText > textarea {
+          .memo {
+            resize: vertical;
+            max-height: calc(40vh - 52px);
+            font-size: 16px;
+            font-weight: 100;
+          }
+
+          .bodyText {
             resize: none;
+            font-size: 16px;
+            font-weight: normal;
+            font-weight: 300;
+            grid-column: 1/5;
           }
 
           .updateTime {
@@ -241,6 +264,13 @@ const Editor: FC<Props> = (props) => {
           .error {
             margin: 0;
             color: #e64b4b;
+          }
+
+          .indicator {
+            align-self: center;
+            grid-column: 2/3;
+            display: flex;
+            align-items: center;
           }
 
           .helpContainer {
@@ -260,7 +290,7 @@ const Editor: FC<Props> = (props) => {
             max-height: 80px;
             width: 200px;
             padding: 5px;
-            border-radius: 8px;
+            border-radius: 4px;
           }
 
           .helpPopup::before {
@@ -317,34 +347,30 @@ const Editor: FC<Props> = (props) => {
           }
 
           h2 {
-            margin: 8px 0;
+            margin: 0;
             font-weight: 500;
             font-size: 16px;
           }
 
           textarea {
-            font-size: 16px;
-            font-weight: 300;
+            font-family: inherit;
             padding: 8px;
             line-height: 150%;
           }
 
           input {
-            font-size: 20px;
-            font-weight: 500;
+            font-family: inherit;
             padding: 4px 8px;
-            color: #313131;
           }
 
           textarea,
           input {
             width: 100%;
             border: none;
-            border-color: #dadada;
-            border-width: 0.5px;
-            border-style: solid;
-            border-radius: 8px;
+            border-radius: 4px;
             outline: none;
+            background-color: #fbfcfe;
+            color: #272423;
           }
 
           button {

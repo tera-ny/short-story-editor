@@ -8,8 +8,13 @@ const Header: FC = () => (
       <div className={"container"}>
         <div className={"wrapper"}>
           <NextLink href={"/"}>
-            <a>
-              <NextImage src={"/logo.png"} width={1369} height={150} />
+            <a draggable="false">
+              <NextImage
+                draggable="false"
+                src={"/logo.png"}
+                width={1369}
+                height={150}
+              />
             </a>
           </NextLink>
         </div>
@@ -19,8 +24,7 @@ const Header: FC = () => (
     <style jsx>
       {`
         header {
-          height: 52px;
-          border-bottom: 0.5px solid black;
+          height: 80px;
         }
         hr {
           margin: 0;

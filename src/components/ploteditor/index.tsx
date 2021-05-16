@@ -16,7 +16,6 @@ const PlotEditor: FC<Props> = ({ template }) => {
   const send = useRecoilCallback(({ snapshot }) => async () => {
     const plot = await snapshot.getPromise(editingPlotSelector);
     reset();
-    console.log(plot);
   });
   const [plot, setPlot] = useRecoilState(editingPlotState);
   useEffect(() => {

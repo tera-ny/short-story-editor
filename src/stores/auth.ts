@@ -1,9 +1,8 @@
 import { atom } from "recoil";
-import firebase from "~/modules/firebase";
 
-const state = atom<string>({
+const state = atom<{ uid?: string; subscribed: boolean }>({
   key: "auth",
-  default: firebase.auth().currentUser?.uid,
+  default: { uid: null, subscribed: false },
 });
 
 export default state;

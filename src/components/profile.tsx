@@ -7,10 +7,10 @@ import NextImage from "next/image";
 import { format } from "~/modules/date";
 
 const Profile: FC = () => {
-  const uid = useRecoilValue(authState);
+  const auth = useRecoilValue(authState);
   const [user, setUser] = useRecoilState(userState);
   useEffect(() => {
-    if (user?.uid === uid) {
+    if (user?.uid === auth.uid) {
       return;
     }
     let mounted = true;
@@ -18,17 +18,17 @@ const Profile: FC = () => {
       const userSnapshot = await firebase
         .firestore()
         .collection("users")
-        .doc(uid)
+        .doc(auth.uid)
         .withConverter(userConverter)
         .get();
       if (mounted) {
-        setUser({ uid, data: userSnapshot.data() });
+        setUser({ uid: auth.uid, data: userSnapshot.data() });
       }
     })();
     return () => {
       mounted = false;
     };
-  }, [uid, user]);
+  }, [auth.uid, user?.uid]);
   if (!user) {
     return <></>;
   }

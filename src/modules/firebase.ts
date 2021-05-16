@@ -1,5 +1,4 @@
 import firebase from "firebase/app";
-import "firebase/auth";
 import "firebase/firestore";
 import { User, Story } from "~/modules/entity";
 import omitBy from "lodash.omitby";
