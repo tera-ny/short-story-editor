@@ -13,13 +13,13 @@ interface Props {
 
 const StoryList: FC<Props> = ({ type }) => {
   const [stories, setStories] = useRecoilState(storiesSelector({ type }));
-  const uid = useRecoilValue(authState);
+  const auth = useRecoilValue(authState);
   useEffect(() => {
-    if (uid) {
+    if (auth.uid) {
       let mounted = true;
       (async () => {
         const stories = await path.users.stories
-          .ref(uid)
+          .ref(auth.uid)
           .where("isActive", "==", true)
           .orderBy("updateTime", "desc")
           .get();
@@ -35,7 +35,7 @@ const StoryList: FC<Props> = ({ type }) => {
         mounted = false;
       };
     }
-  }, [uid]);
+  }, [auth.uid]);
   return (
     <>
       <div className={"container"}>

@@ -3,17 +3,18 @@ import authState from "~/stores/auth";
 import { useRecoilValue } from "recoil";
 import { useRouter } from "next/router";
 import firebase from "~/modules/firebase";
+import "firebase/auth";
 
 const Logout: FC = () => {
-  const uid = useRecoilValue(authState);
+  const auth = useRecoilValue(authState);
   const router = useRouter();
   useEffect(() => {
-    if (uid === null) {
-      router.push("/");
-    } else if (uid) {
+    if (!auth.uid && auth.subscribed) {
+      router.push("/login");
+    } else {
       firebase.auth().signOut();
     }
-  }, [uid]);
+  }, [auth]);
   return <></>;
 };
 

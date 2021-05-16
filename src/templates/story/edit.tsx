@@ -8,7 +8,7 @@ import { path } from "~/modules/firebase";
 
 const Template: FC = () => {
   const router = useRouter();
-  const uid = useRecoilValue(authState);
+  const auth = useRecoilValue(authState);
   const id = useMemo(() => {
     if (typeof router.query.storyid === "string") {
       return router.query.storyid;
@@ -23,7 +23,7 @@ const Template: FC = () => {
     if (!id) {
       return;
     }
-    const unsubscribe = path.users.stories.id.ref(uid, id).onSnapshot(
+    const unsubscribe = path.users.stories.id.ref(auth.uid, id).onSnapshot(
       (snapshot) => {
         if (snapshot.exists) {
           setStory(snapshot.data());
@@ -43,7 +43,7 @@ const Template: FC = () => {
     return () => {
       unsubscribe();
     };
-  }, [uid, id]);
+  }, [auth, id]);
   if (story) {
     return <Editor type="edit" {...story} id={id} />;
   } else if (error) {

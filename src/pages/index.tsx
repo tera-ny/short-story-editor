@@ -11,13 +11,13 @@ export const getStaticProps: GetStaticProps<{}> = async () => {
 const Page: NextPage<{}> = () => {
   return (
     <>
-      <Header />
-      <main>
-        <Auth>
+      <Auth shouldLoggedIn>
+        <Header />
+        <main>
           <TopTemplate />
-        </Auth>
-      </main>
-      <style jsx>{defaultStyle}</style>
+        </main>
+        <style jsx>{defaultStyle}</style>
+      </Auth>
     </>
   );
 };

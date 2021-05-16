@@ -1,49 +1,62 @@
-import { FC, useCallback, useEffect, useState } from "react";
+import { ChangeEvent, FC, useCallback, useEffect, useState } from "react";
 import authState from "~/stores/auth";
 import { useRecoilValue } from "recoil";
 import { useRouter } from "next/router";
 import firebase from "~/modules/firebase";
+import "firebase/auth";
 
+const useInput = (initialValue: string) => {
+  const [value, set] = useState(initialValue);
+  return {
+    value,
+    onChange: (e: ChangeEvent<HTMLInputElement>) => set(e.target.value),
+  };
+};
 const Login: FC = () => {
-  const uid = useRecoilValue(authState);
+  const auth = useRecoilValue(authState);
   const router = useRouter();
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const email = useInput("");
+  const password = useInput("");
+  const [error, setError] = useState("");
 
-  const login = useCallback(() => {
-    firebase.auth().signInWithEmailAndPassword(email, password);
-  }, [email, password]);
+  const login = useCallback(async () => {
+    try {
+      setError("");
+      await firebase
+        .auth()
+        .signInWithEmailAndPassword(email.value, password.value);
+    } catch (error) {
+      if (error.code && typeof error.code === "string") {
+        setError("メールアドレスもしくはパスワードが異なります。");
+      }
+    }
+  }, [email.value, password.value]);
 
   useEffect(() => {
-    if (uid) {
+    if (auth.uid) {
       router.push("/");
     }
-  }, [uid]);
-
-  if (uid !== null) {
+  }, [auth.uid]);
+  if (auth.uid !== null) {
     return <></>;
   }
   return (
     <>
       <div className="container">
         <h2>short-story.space editorにログイン</h2>
+        <div>
+          <p>{error}</p>
+        </div>
         <input
           type="email"
+          spellCheck={false}
+          autoCapitalize="none"
+          autoComplete="username"
           placeholder="mail@short-story.space"
-          onChange={(e) => {
-            setEmail(e.target.value);
-          }}
-          value={email}
+          {...email}
         />
-        <input
-          type="password"
-          placeholder="password"
-          onChange={(e) => {
-            setPassword(e.target.value);
-          }}
-          value={password}
-        />
+        <input type="password" placeholder="password" {...password} />
         <div className="tools">
           <a href="/account/reset_password">パスワードをお忘れの方</a>
           <button
@@ -85,6 +98,9 @@ const Login: FC = () => {
             padding: 8px;
             outline: none;
           }
+          input:focus {
+            border: 1px solid black;
+          }
           .container > * {
             grid-column: 1/2;
           }
@@ -100,6 +116,9 @@ const Login: FC = () => {
           }
           button:active {
             background-color: rgba(0, 0, 0, 0.8);
+          }
+          p {
+            color: red;
           }
         `}
       </style>

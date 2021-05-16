@@ -1,16 +1,14 @@
 import { FC, Fragment } from "react";
-import { Story } from "~/modules/entity";
 import parser from "~/modules/parser";
 
 interface Props {
-  story: Story;
+  text: string;
 }
 
-const Preview: FC<Props> = ({ story }) => {
+const Preview: FC<Props> = ({ text }) => {
   return (
     <>
-      <h2>{story.title}</h2>
-      {parser(story.body).map((child, index) => (
+      {parser(text).map((child, index) => (
         <Fragment key={index}>
           {child.type === "text" && <p>{child.body}</p>}
           {child.type === "title" && (
@@ -22,13 +20,6 @@ const Preview: FC<Props> = ({ story }) => {
           )}
         </Fragment>
       ))}
-      <style jsx>
-        {`
-          p {
-            white-space: pre-wrap;
-          }
-        `}
-      </style>
     </>
   );
 };
