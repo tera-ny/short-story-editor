@@ -20,17 +20,23 @@ const Login: FC = () => {
   const password = useInput("");
   const [error, setError] = useState("");
 
-  const login = useCallback(async () => {
-    try {
-      setError("");
-      await firebase
-        .auth()
-        .signInWithEmailAndPassword(email.value, password.value);
-    } catch (error) {
-      if (error.code && typeof error.code === "string") {
-        setError("メールアドレスもしくはパスワードが異なります。");
+  const login = useCallback(() => {
+    let mounted = true;
+    (async () => {
+      try {
+        setError("");
+        await firebase
+          .auth()
+          .signInWithEmailAndPassword(email.value, password.value);
+      } catch (error) {
+        if (error.code && typeof error.code === "string" && mounted) {
+          setError("メールアドレスもしくはパスワードが異なります。");
+        }
       }
-    }
+    })();
+    return () => {
+      mounted = false;
+    };
   }, [email.value, password.value]);
 
   useEffect(() => {

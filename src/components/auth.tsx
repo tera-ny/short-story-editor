@@ -3,6 +3,7 @@ import { useRecoilState } from "recoil";
 import authState from "~/stores/auth";
 import firebase from "~/modules/firebase";
 import NextError from "next/error";
+import "firebase/auth";
 
 interface Props {
   shouldLoggedIn?: boolean;
